@@ -784,6 +784,7 @@ int ImageTransform::ConvertFrame(const uint8_t *pBuffer, uint32_t length,
         const int tegraShift12Bit = 4;
 
         QFile socId("/sys/devices/soc0/soc_id");
+        QFile tegraId("/sys/module/tegra_fuse/parameters/tegra_chip_id");
 
         if (socId.exists() && socId.open(QFile::ReadOnly))
         {
@@ -808,6 +809,29 @@ int ImageTransform::ConvertFrame(const uint8_t *pBuffer, uint32_t length,
             }
 
             socId.close();
+        }
+        else if (tegraId.exists() && tegraId.open(QFile::ReadOnly))
+        {
+            auto tegraIdString = tegraId.readAll().trimmed().toStdString();
+            if (tegraIdString.compare("25") == 0)
+            {
+                // Xavier: AGX or NX
+                LOG_EX("Detected Xavier AGX or NX");
+                g_shift10Bit = 8;
+                g_shift12Bit = 8;
+            }
+            else if (tegraIdString.compare("35") == 0)
+            {
+                // Orin: AGX or NX
+                LOG_EX("Detected Orin AGX or NX");
+                g_shift10Bit = 8;
+                g_shift12Bit = 8;
+            }
+            else
+            {
+                g_shift10Bit = tegraShift10Bit;
+                g_shift12Bit = tegraShift12Bit;
+            }
         }
         else
         {

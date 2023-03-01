@@ -1530,6 +1530,7 @@ void V4L2Viewer::OnPixelFormatChanged(const QString &item)
         result += *s++ << 16;
         result += *s++ << 24;
     }
+    printf("ALAIN OnPixelFormatChanged: %s %08x\n", tmp.c_str(), result);
 
     if (m_Camera.SetPixelFormat(result, "") < 0)
     {
@@ -2144,6 +2145,7 @@ void V4L2Viewer::SetTitleText()
 
 void V4L2Viewer::OnFrameSizeIndexChanged(int index)
 {
+    printf("ALAIN OnFrameSizeIndexChanged %s:%d\n", __FILE__, __LINE__);
 	m_Camera.SetFrameSizeByIndex(index);
 
 	GetImageInformation();

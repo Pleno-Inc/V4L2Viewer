@@ -537,6 +537,10 @@ public:
 
     bool UsesSubdevices();
 
+    int SetOverrideEnable(const int64_t value);
+    int SetBypassMode(const int64_t value);
+    int SetSensorMode(const int64_t value);
+
     // Get the device used to control gain
     //
     // Returns
