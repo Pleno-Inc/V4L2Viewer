@@ -913,7 +913,7 @@ int Camera::SetFrameSize(uint32_t width, uint32_t height)
             const auto rc = SetSensorMode(sensor_mode);
             //SetBypassMode(0);
             //SetOverrideEnable(1);
-            printf("ALAIN SetFrameSize: %ux%u %08x, sensor mode %d => %d\n", fmt.fmt.pix.width, fmt.fmt.pix.height, fmt.fmt.pix.pixelformat, sensor_mode, rc);
+            //printf("ALAIN SetFrameSize: %ux%u %08x, sensor mode %d => %d\n", fmt.fmt.pix.width, fmt.fmt.pix.height, fmt.fmt.pix.pixelformat, sensor_mode, rc);
 
 
             result = iohelper::xioctl(m_DeviceFileDescriptor, VIDIOC_S_FMT, &fmt);
@@ -1178,7 +1178,7 @@ int Camera::SetPixelFormat(uint32_t pixelFormat, QString pfText)
     int result = -1;
     v4l2_format fmt;
 
-    printf("ALAIN SetPixelFormat: %08x\n", pixelFormat);
+    //printf("ALAIN SetPixelFormat: %08x\n", pixelFormat);
 
     CLEAR(fmt);
     fmt.type = m_DeviceBufferType;
@@ -1215,7 +1215,7 @@ int Camera::SetPixelFormat(uint32_t pixelFormat, QString pfText)
             const auto rc = SetSensorMode(sensor_mode);
             //SetBypassMode(0);
             //SetOverrideEnable(1);
-            printf("ALAIN SetPixelFormat: %ux%u %08x, sensor mode %d => %d\n", fmt.fmt.pix.width, fmt.fmt.pix.height, pixelFormat, sensor_mode, rc);
+            //printf("ALAIN SetPixelFormat: %ux%u %08x, sensor mode %d => %d\n", fmt.fmt.pix.width, fmt.fmt.pix.height, pixelFormat, sensor_mode, rc);
 
             result = iohelper::xioctl(m_DeviceFileDescriptor, VIDIOC_S_FMT, &fmt);
             if (-1 != result)
@@ -1282,7 +1282,7 @@ int Camera::GetFrameSizeIndex()
 			{
 				if (frmsizeenum.discrete.width == sel.r.width &&
 					frmsizeenum.discrete.height == sel.r.height)
-                    printf("ALAIN: frame size index %d\n", index);
+                    //printf("ALAIN: frame size index %d\n", index);
 					return index;
 
 				frmsizeenum.index = (++index);
@@ -1316,7 +1316,7 @@ void Camera::SetFrameSizeByIndex(int index)
             const auto rc = SetSensorMode(sensor_mode);
             //SetBypassMode(0);
             //SetOverrideEnable(1);
-            printf("ALAIN SetFrameSizeByIndex: %ux%u %08x, sensor mode %d => %d\n", frmsizeenum.discrete.width, frmsizeenum.discrete.height, fmt.fmt.pix.pixelformat, sensor_mode, rc);
+            //printf("ALAIN SetFrameSizeByIndex: %ux%u %08x, sensor mode %d => %d\n", frmsizeenum.discrete.width, frmsizeenum.discrete.height, fmt.fmt.pix.pixelformat, sensor_mode, rc);
 
 			iohelper::xioctl(m_DeviceFileDescriptor, VIDIOC_S_FMT, &fmt);
 		}
