@@ -1937,6 +1937,10 @@ QCheckBox::disabled{
                       <height>16777215</height>
                      </size>
                     </property>
+                    <property name="toolTip">
+                     <string>&lt;p&gt;&lt;b&gt;Frame sizes&lt;/b&gt;&lt;/p&gt;
+&lt;span&gt;Clicking this button will show all available frame sizes.&lt;/span&gt;</string>
+                    </property>
                     <property name="styleSheet">
                      <string notr="true">QWidget{
 border:none;

@@ -1282,12 +1282,16 @@ int Camera::GetFrameSizeIndex()
 			{
 				if (frmsizeenum.discrete.width == sel.r.width &&
 					frmsizeenum.discrete.height == sel.r.height)
-                    //printf("ALAIN: frame size index %d\n", index);
 					return index;
 
 				frmsizeenum.index = (++index);
 			}
 		}
+        else
+        {
+            index = sensor_mode_for(fmt.fmt.pix.width, fmt.fmt.pix.height, fmt.fmt.pix.pixelformat);
+            return index;
+        }
 	}
 
 	return -1;
