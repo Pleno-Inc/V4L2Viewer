@@ -1376,7 +1376,10 @@ int Camera::EnumAllControlNewStyle()
 
         while (0 == iohelper::xioctl(fileDescriptor, VIDIOC_QUERY_EXT_CTRL, &qctrl))
         {
-            if (!(qctrl.flags & V4L2_CTRL_FLAG_DISABLED))
+            if (strcmp(qctrl.name, "Sensor Mode") == 0) {
+                // alain: remove so user has to stop camera to change resolution
+            }
+            else if (!(qctrl.flags & V4L2_CTRL_FLAG_DISABLED))
             {
                 bool bIsReadOnly = false;
                 if (qctrl.flags & V4L2_CTRL_FLAG_READ_ONLY || qctrl.id == V4L2_CID_PREFFERED_STRIDE)
