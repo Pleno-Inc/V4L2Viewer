@@ -232,11 +232,11 @@ int sensor_mode_for(const uint32_t width, const uint32_t height, const uint32_t 
 {
     for (int i = 0; g_modes[i].width != 0; ++i) {
         if (g_modes[i].width == width and g_modes[i].height == height and g_modes[i].pixformat == pixformat) {
-            print("  sensor mode for %ux%u %08x: %d\n", width, height, pixformat, i);
+            printf("  sensor mode for %ux%u %08x: %d\n", width, height, pixformat, i);
             return i;
         }
     }
-    print("  sensor mode for %ux%u %08x: not found\n", width, height, pixformat);
+    printf("  sensor mode for %ux%u %08x: not found\n", width, height, pixformat);
     return -1;
 }
 
