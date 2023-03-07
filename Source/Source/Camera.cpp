@@ -1248,8 +1248,10 @@ QList<QString> Camera::GetFrameSizes(uint32_t fourcc)
 	frmsizeenum.index = index;
 
 	while (!iohelper::xioctl(m_DeviceFileDescriptor,VIDIOC_ENUM_FRAMESIZES,&frmsizeenum)) {
-		framesizes.append(QString("%1x%2").arg(frmsizeenum.discrete.width).arg(frmsizeenum.discrete.height));
-
+        auto qstr = QString("%1x%2").arg(frmsizeenum.discrete.width).arg(frmsizeenum.discrete.height)
+        if (index > 0 && framesizes.at(framesizes.size()-1) != qstr) {
+    		framesizes.append(qstr);
+        }
 
 		frmsizeenum.index = (++index);
 	}
