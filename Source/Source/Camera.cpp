@@ -1246,11 +1246,13 @@ QList<QString> Camera::GetFrameSizes(uint32_t fourcc)
 
 	frmsizeenum.pixel_format = fourcc;
 	frmsizeenum.index = index;
+	QString prevstr;
 
 	while (!iohelper::xioctl(m_DeviceFileDescriptor,VIDIOC_ENUM_FRAMESIZES,&frmsizeenum)) {
         auto qstr = QString("%1x%2").arg(frmsizeenum.discrete.width).arg(frmsizeenum.discrete.height);
-        if (index > 0 && framesizes.at(framesizes.size()-1) != qstr) {
+        if (index > 0 && prevstr.compare(qstr) != 0) {
     		framesizes.append(qstr);
+		prevstr = qstr;
         }
 
 		frmsizeenum.index = (++index);
