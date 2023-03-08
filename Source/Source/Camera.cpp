@@ -209,22 +209,18 @@ static const struct smode_t {
     uint32_t  height;
     uint32_t  pixformat;
 } g_modes[] = {
-    {8432, 5648, V4L2_PIX_FMT_SRGGB12},
+    {8432, 5648, V4L2_PIX_FMT_SRGGB12},  // mode 0 (non ROI, defined by Leopard imaging)
     {8432, 5648, V4L2_PIX_FMT_SRGGB10},
-    {6528, 4448, V4L2_PIX_FMT_SRGGB12},
+    {6528, 4448, V4L2_PIX_FMT_SRGGB12},  // mode 2 (ROI 80%, defined by Leopard imaging)
     {6528, 4448, V4L2_PIX_FMT_SRGGB10},
-    {8320, 5632, V4L2_PIX_FMT_SRGGB12},
-    {8320, 5632, V4L2_PIX_FMT_SRGGB10},
-    {8192, 5504, V4L2_PIX_FMT_SRGGB12},
-    {8192, 5504, V4L2_PIX_FMT_SRGGB10},
-    {5632, 5632, V4L2_PIX_FMT_SRGGB12},
-    {5632, 5632, V4L2_PIX_FMT_SRGGB10},
-    {4096, 4096, V4L2_PIX_FMT_SRGGB12},
-    {4096, 4096, V4L2_PIX_FMT_SRGGB10},
-    {2048, 2048, V4L2_PIX_FMT_SRGGB12},
-    {2048, 2048, V4L2_PIX_FMT_SRGGB10},
-    {1600, 1600, V4L2_PIX_FMT_SRGGB12},
-    {1600, 1600, V4L2_PIX_FMT_SRGGB10},
+    {8336, 5556, V4L2_PIX_FMT_SRGGB12},  // mode 4 (ROI, defined by Pleno)
+    {8336, 5556, V4L2_PIX_FMT_SRGGB10},
+    {8192, 5556, V4L2_PIX_FMT_SRGGB12},  // mode 6 (ROI, defined by Pleno)
+    {8192, 5556, V4L2_PIX_FMT_SRGGB10},
+    {6656, 5556, V4L2_PIX_FMT_SRGGB12},  // mode 8 (ROI, defined by Pleno)
+    {6656, 5556, V4L2_PIX_FMT_SRGGB10},
+    {5760, 5556, V4L2_PIX_FMT_SRGGB12},  // mode 10 (ROI, defined by Pleno)
+    {5760, 5556, V4L2_PIX_FMT_SRGGB10},
     {0, 0, 0},
 };
 
