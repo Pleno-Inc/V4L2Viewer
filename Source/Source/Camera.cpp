@@ -1934,17 +1934,23 @@ bool Camera::UsesSubdevices() {
 
 int Camera::SetSensorMode(const int64_t value)
 {
-    return SetExtControl(value, V4L2_CID_SENSOR_MODE, "SetExposure", "V4L2_CID_SENSOR_MODE", V4L2_CTRL_ID2CLASS(V4L2_CID_SENSOR_MODE));
+    const int rc = SetExtControl(value, V4L2_CID_SENSOR_MODE, "SetExposure", "V4L2_CID_SENSOR_MODE", V4L2_CTRL_ID2CLASS(V4L2_CID_SENSOR_MODE));
+    printf("set sensor mode %ld: %d, %s, %s\n", value, rc, strerror(rc), strerror(errno));
+    return rc;
 }
 
 int Camera::SetBypassMode(const int64_t value)
 {
-    return SetExtControl(value, V4L2_CID_BYPASS_MODE, "SetBypassMode", "V4L2_CID_BYPASS_MODE", V4L2_CTRL_ID2CLASS(V4L2_CID_BYPASS_MODE));
+    const int rc = SetExtControl(value, V4L2_CID_BYPASS_MODE, "SetBypassMode", "V4L2_CID_BYPASS_MODE", V4L2_CTRL_ID2CLASS(V4L2_CID_BYPASS_MODE));
+    printf("set bypass mode %ld: %d, %s, %s\n", value, rc, strerror(rc), strerror(errno));
+    return rc;
 }
 
 int Camera::SetOverrideEnable(const int64_t value)
 {
-    return SetExtControl(value, V4L2_CID_OVERRIDE_ENABLE, "SetOverrideEnable", "V4L2_CID_OVERRIDE_ENABLE", V4L2_CTRL_ID2CLASS(V4L2_CID_OVERRIDE_ENABLE));
+    const int rc = SetExtControl(value, V4L2_CID_OVERRIDE_ENABLE, "SetOverrideEnable", "V4L2_CID_OVERRIDE_ENABLE", V4L2_CTRL_ID2CLASS(V4L2_CID_OVERRIDE_ENABLE));
+    printf("set override enable %ld: %d, %s, %s\n", value, rc, strerror(rc), strerror(errno));
+    return rc;
 }
 
 
