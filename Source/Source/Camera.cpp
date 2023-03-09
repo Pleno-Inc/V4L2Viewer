@@ -1544,7 +1544,7 @@ int Camera::EnumAllControlNewStyle()
     int rc = SetBypassMode(bypass_mode);
     printf("-- ALAIN: set bypass mode %d: %s\n", bypass_mode, (rc == 0) ? "OK" : strerror(rc));
 
-    const int override_enable = 0;
+    const int override_enable = 1;
     rc = SetOverrideEnable(override_enable);
     printf("-- ALAIN: set override enable %d: %s\n", override_enable, (rc == 0) ? "OK" : strerror(rc));
 
