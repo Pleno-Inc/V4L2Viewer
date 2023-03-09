@@ -1540,8 +1540,8 @@ int Camera::EnumAllControlNewStyle()
         }
     }
 
-    printf("## ALAIN: set bypass mode: %d\n", SetBypassMode(0));
-    printf("## ALAIN: set override enable: %d\n", SetOverrideEnable(1));
+    printf("-- ALAIN: set bypass mode: %d\n", SetBypassMode(0));
+    printf("-- ALAIN: set override enable: %d\n", SetOverrideEnable(1));
 
     return result;
 }
@@ -1633,29 +1633,23 @@ int Camera::SetExtControl(T value, uint32_t controlID, const char *functionName,
     extCtrls.count = 1;
     extCtrls.ctrl_class = controlClass;
 
-    printf("__ %d\n", __LINE__);
     if (-1 != iohelper::xioctl(m_ControlIdToFileDescriptorMap[controlID], VIDIOC_TRY_EXT_CTRLS, &extCtrls))
     {
-        printf("__ %d\n", __LINE__);
         if (-1 != iohelper::xioctl(m_ControlIdToFileDescriptorMap[controlID], VIDIOC_S_EXT_CTRLS, &extCtrls))
         {
-            printf("__ %d\n", __LINE__);
             LOG_EX("Camera::SetExtControl VIDIOC_S_EXT_CTRLS %s function name: %s control name: %s (%s) to %d OK", m_FileDescriptorToNameMap[m_ControlIdToFileDescriptorMap[controlID]].c_str(), functionName, controlName, m_ControlIdToControlNameMap[controlID].c_str(), value);
             result = 0;
         }
         else
         {
-            printf("__ %d\n", __LINE__);
             LOG_EX("Camera::SetExtControlVIDIOC_S_EXT_CTRLS %s function name: %s control name: %s (%s) failed errno=%d=%s", m_FileDescriptorToNameMap[m_ControlIdToFileDescriptorMap[controlID]].c_str(), functionName, controlName, m_ControlIdToControlNameMap[controlID].c_str(), errno, v4l2helper::ConvertErrno2String(errno).c_str());
         }
     }
     else
     {
-        printf("__ %d\n", __LINE__);
         LOG_EX("Camera::SetExtControl VIDIOC_TRY_EXT_CTRLS %s function name: %s control name: %s (%s) failed errno=%d=%s", m_FileDescriptorToNameMap[m_ControlIdToFileDescriptorMap[controlID]].c_str(), functionName, controlName, m_ControlIdToControlNameMap[controlID].c_str(), errno, v4l2helper::ConvertErrno2String(errno).c_str());
     }
 
-    printf("__ %d\n", __LINE__);
     return result;
 }
 
