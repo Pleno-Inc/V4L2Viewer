@@ -427,6 +427,10 @@ int Camera::OpenDevice(std::string &deviceName, QVector<QString>& subDevices, bo
 
             QueryControls(subDeviceFileDescriptor);
         }
+
+        SetBypassMode(0);
+        SetOverrideEnable(1);
+
     }
     else
     {
@@ -1391,7 +1395,9 @@ int Camera::EnumAllControlNewStyle()
 				{
 					bIsReadOnly = true;
 				}
-                if (strcmp(qctrl.name, "Sensor Mode") == 0) {
+                if ((strcmp(qctrl.name, "Sensor Mode") == 0) || (strcmp(qctrl.name, "Bypass Mode") == 0) || (strcmp(qctrl.name, "Override Enable") == 0)
+                || (strcmp(qctrl.name, "Height Align") == 0) || (strcmp(qctrl.name, "Size Align") == 0) || (strcmp(qctrl.name, "Write ISP format") == 0)
+                 || (strcmp(qctrl.name, "Low Latency Mode") == 0)) {
                     // alain: make read only
                     bIsReadOnly = true;
                 }
