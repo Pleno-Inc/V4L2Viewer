@@ -29,6 +29,10 @@
 #include <linux/videodev2.h>
 #include <sstream>
 
+#include <cstdint>
+#include "bayer.h"
+
+
 #define CLIP(color) (unsigned char)(((color) > 0xFF) ? 0xff : (((color) < 0) ? 0 : (color)))
 
 extern uint8_t *g_ConversionBuffer1;
@@ -177,6 +181,7 @@ void  ConvertJetsonMono16ToRGB24(const void *sourceBuffer, uint32_t width, uint3
 
 void ConvertJetsonBayer16ToRGB24(const void *sourceBuffer, uint32_t width, uint32_t height, QImage& dst, int shift, unsigned int pixfmt)
 {
+#if 1
     uint8_t *destdata = g_ConversionBuffer1;
     uint16_t const *srcdata = reinterpret_cast<uint16_t const*>(sourceBuffer);
 
@@ -187,6 +192,14 @@ void ConvertJetsonBayer16ToRGB24(const void *sourceBuffer, uint32_t width, uint3
 
     dst = QImage(width, height, QImage::Format_RGB888);
     v4lconvert_bayer8_to_rgb24(g_ConversionBuffer1, dst.bits(), width, height, width, pixfmt);
+#else
+    dst = QImage(width, height, QImage::Format_RGB888);
+
+    const dc1394color_filter_t first_color = DC1394_COLOR_FILTER_RGGB;
+    const dc1394bayer_method_t method = DC1394_BAYER_METHOD_BILINEAR;  // DC1394_BAYER_METHOD_NEAREST
+    const int bpp = 16;
+    dc1394_bayer_decoding_16bit((const uint16_t* )sourceBuffer, (uint16_t* )dst.bits(), width, height, first_color, method, bpp);
+#endif
 }
 
 /* inspired by OpenCV's Bayer decoding */
