@@ -34,7 +34,6 @@
 #include "bayer.h"
 static std::string g_imgbuf;
 
-
 #define CLIP(color) (unsigned char)(((color) > 0xFF) ? 0xff : (((color) < 0) ? 0 : (color)))
 
 extern uint8_t *g_ConversionBuffer1;
@@ -183,7 +182,7 @@ void  ConvertJetsonMono16ToRGB24(const void *sourceBuffer, uint32_t width, uint3
 
 void ConvertJetsonBayer16ToRGB24(const void *sourceBuffer, uint32_t width, uint32_t height, QImage& dst, int shift, unsigned int pixfmt)
 {
-#if 1
+#if 0
     uint8_t *destdata = g_ConversionBuffer1;
     uint16_t const *srcdata = reinterpret_cast<uint16_t const*>(sourceBuffer);
 
@@ -197,19 +196,28 @@ void ConvertJetsonBayer16ToRGB24(const void *sourceBuffer, uint32_t width, uint3
 #else
     dst = QImage(width, height, QImage::Format_RGB888);
 
-
     const dc1394color_filter_t first_color = DC1394_COLOR_FILTER_RGGB;
     const dc1394bayer_method_t method = DC1394_BAYER_METHOD_BILINEAR;  // DC1394_BAYER_METHOD_NEAREST
     const int bpp = 16;
 
-    const ssize_t out_size = width * height * (bpp / 8) * 3;
+    const uint32_t out_size = width * height * (bpp / 8) * 3;
     if (g_imgbuf.size() != out_size) {
         g_imgbuf.resize(out_size);
     }
     const int rc = dc1394_bayer_decoding_16bit((const uint16_t* )sourceBuffer, (uint16_t* )&g_imgbuf[0], width, height, first_color, method, bpp);
-    printf(">> debayer %d\n", rc);
-    memcpy(dst.bits(), &g_imgbuf[0], out_size);
-    printf(">> copy OK\n");
+
+    // output is width x height in 16-bit RGB values, convert to 8-bit RGB values
+    uint16_t* rptr = (uint16_t* )&g_imgbuf[0];
+    uint8_t* wptr = (uint8_t* )dst.bits();
+    uint16_t r, g, b;
+    for (uint32_t sz = width*height; sz > 0; --sz) {
+        r = *rptr++;
+        g = *rptr++;
+        b = *rptr++;
+        *wptr++ = (r >> 8);
+        *wptr++ = (g >> 8);
+        *wptr++ = (b >> 8);
+    }
 #endif
 }
 
