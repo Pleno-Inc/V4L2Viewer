@@ -182,7 +182,7 @@ void  ConvertJetsonMono16ToRGB24(const void *sourceBuffer, uint32_t width, uint3
 
 void ConvertJetsonBayer16ToRGB24(const void *sourceBuffer, uint32_t width, uint32_t height, QImage& dst, int shift, unsigned int pixfmt)
 {
-#if 1
+#if 0
     uint8_t *destdata = g_ConversionBuffer1;
     uint16_t const *srcdata = reinterpret_cast<uint16_t const*>(sourceBuffer);
 
