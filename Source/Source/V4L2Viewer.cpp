@@ -43,6 +43,8 @@
 
 #include <linux/media.h>
 
+#include "write_tiff.h"
+
 
 #define NUM_COLORS 3
 #define BIT_DEPTH 8
