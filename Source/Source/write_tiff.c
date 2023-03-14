@@ -76,7 +76,7 @@ int write_tiff(const char* outputpath, uint8_t* imgbytes, const uint32_t width, 
     memcpy(&header[0], &tiff_header, sizeof(header));
 
     printf("_alain_ %d\n", __LINE__);
-    (void )write_header(&header, width, height, bpp);
+    (void )write_header(&header[0], width, height, bpp);
 
     printf("_alain_ %d\n", __LINE__);
     ofile = fopen(outputpath, "w");
