@@ -1129,6 +1129,7 @@ void V4L2Viewer::OnSaveImageClicked()
 {
     QString filename = "/Frame_"+QString::number(m_SavedFramesCounter)+m_LastImageSaveFormat;
     QString fullPath = QFileDialog::getSaveFileName(this, tr("Save file"), QDir::homePath()+filename, "*.png *.raw *.tiff");
+    const auto  outputpath = fullPath.toStdString();
 
     if (fullPath.contains(".png"))
     {
@@ -1159,16 +1160,19 @@ void V4L2Viewer::OnSaveImageClicked()
     {
         m_LastImageSaveFormat = ".tiff";
 
-        std::string  outputpath = fullPath.toStdString();
         QPixmap pixmap = m_PixmapItem->pixmap();
         QImage image = pixmap.toImage();
         uint32_t height = image.height();
         uint32_t width = image.width();
+        LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s", outputpath.c_str(), width, height);
         int rc = write_tiff(outputpath.c_str(), image.bits(), width, height, 8);
-        LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s: %s", outputpath.c_str(), width, height, (rc == 0) ? "OK" : "failed!");
+        if (rc == 0) {
+            LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s: OK", outputpath.c_str(), width, height);
+        } else {
+            LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s: failed %s", outputpath.c_str(), width, height, strerror(rc));
+        }
 
     } else {
-        std::string  outputpath = fullPath.toStdString();
         LOG_EX("V4L2Viewer::OnSaveImageClicked: file format not supported for %s", outputpath.c_str());
     }
 }
