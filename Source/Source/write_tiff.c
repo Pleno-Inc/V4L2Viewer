@@ -16,7 +16,7 @@
 //
 #define TIFF_HDR_NUM_ENTRY 8
 #define TIFF_HDR_SIZE 10+TIFF_HDR_NUM_ENTRY*12 
-const uint8_t tiff_header[TIFF_HDR_SIZE] = {
+static const uint8_t tiff_header[TIFF_HDR_SIZE] = {
 	// I     I     42    
 	  0x49, 0x49, 0x2a, 0x00,
 	// ( offset to tags, 0 )  
@@ -42,7 +42,7 @@ const uint8_t tiff_header[TIFF_HDR_SIZE] = {
 };
 
 
-static uint8_t* write_header(uint8_t * rgb, uint32_t width, uint32_t height, uint16_t bpp)
+static uint8_t* write_header(uint8_t * rgb, const uint32_t width, const uint32_t height, const uint16_t bpp)
 {
 	uint32_t ulTemp=0;
 	uint16_t sTemp=0;

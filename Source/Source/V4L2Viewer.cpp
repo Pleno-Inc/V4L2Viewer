@@ -1179,6 +1179,8 @@ void V4L2Viewer::OnSaveImageClicked()
         uint32_t width = image.width();
     printf("ALAIN %d\n", __LINE__);
     fflush(stdout);
+    printf("ALAIN %d: bits %p\n", __LINE__, image.bits());
+    fflush(stdout);
         LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s", outputpath.c_str(), width, height);
         int rc = write_tiff(outputpath.c_str(), image.bits(), width, height, 8);
         if (rc == 0) {
