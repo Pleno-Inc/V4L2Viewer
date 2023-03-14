@@ -87,7 +87,7 @@ int write_tiff(const char* outputpath, uint8_t* imgbytes, const uint32_t width, 
         return errno;
     }
 
-    nbytes = width*height * (bpp / 8);
+    nbytes = width * height * 3 * (bpp / 8);
     if (fwrite(imgbytes, 1, nbytes, ofile) != nbytes) {
         fclose(ofile);
         return errno;
