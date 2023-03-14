@@ -1129,10 +1129,16 @@ void V4L2Viewer::OnSaveImageClicked()
 {
     QString filename = "/Frame_"+QString::number(m_SavedFramesCounter)+m_LastImageSaveFormat;
     QString fullPath = QFileDialog::getSaveFileName(this, tr("Save file"), QDir::homePath()+filename, "*.png *.raw *.tiff");
+    printf("ALAIN %d\n", __LINE__);
+    fflush(stdout);
+
     const auto  outputpath = fullPath.toStdString();
+    printf("ALAIN %d: %s\n", __LINE__, outputpath.c_str());
+    fflush(stdout);
 
     if (fullPath.contains(".png"))
     {
+    printf("ALAIN %d: PNG\n", __LINE__);
         m_LastImageSaveFormat = ".png";
         QPixmap pixmap = m_PixmapItem->pixmap();
         QImage image = pixmap.toImage();
@@ -1141,6 +1147,7 @@ void V4L2Viewer::OnSaveImageClicked()
     }
     else if(fullPath.contains(".raw"))
     {
+    printf("ALAIN %d: RAW\n", __LINE__);
         m_LastImageSaveFormat = ".raw";
         QPixmap pixmap = m_PixmapItem->pixmap();
         QImage image = pixmap.toImage();
@@ -1158,19 +1165,33 @@ void V4L2Viewer::OnSaveImageClicked()
     }
     else if(fullPath.contains(".tiff"))
     {
+    printf("ALAIN %d: TIFF\n", __LINE__);
+    fflush(stdout);
         m_LastImageSaveFormat = ".tiff";
 
+    printf("ALAIN %d\n", __LINE__);
+    fflush(stdout);
         QPixmap pixmap = m_PixmapItem->pixmap();
         QImage image = pixmap.toImage();
+    printf("ALAIN %d\n", __LINE__);
+    fflush(stdout);
         uint32_t height = image.height();
         uint32_t width = image.width();
+    printf("ALAIN %d\n", __LINE__);
+    fflush(stdout);
         LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s", outputpath.c_str(), width, height);
         int rc = write_tiff(outputpath.c_str(), image.bits(), width, height, 8);
         if (rc == 0) {
+    printf("ALAIN %d\n", __LINE__);
+    fflush(stdout);
             LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s: OK", outputpath.c_str(), width, height);
         } else {
+    printf("ALAIN %d\n", __LINE__);
+    fflush(stdout);
             LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s: failed %s", outputpath.c_str(), width, height, strerror(rc));
         }
+    printf("ALAIN %d\n", __LINE__);
+    fflush(stdout);
 
     } else {
         LOG_EX("V4L2Viewer::OnSaveImageClicked: file format not supported for %s", outputpath.c_str());
