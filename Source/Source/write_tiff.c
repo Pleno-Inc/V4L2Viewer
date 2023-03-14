@@ -73,7 +73,7 @@ int write_tiff(const char* outputpath, uint8_t* imgbytes, const uint32_t width, 
 
     printf("_alain_ %d\n", __LINE__);
     uint8_t  header[TIFF_HDR_SIZE];
-    memcpy((uint8_t* )&header, &tiff_header, sizeof(header));
+    memcpy(&header[0], &tiff_header, sizeof(header));
 
     printf("_alain_ %d\n", __LINE__);
     (void )write_header(&header, width, height, bpp);
