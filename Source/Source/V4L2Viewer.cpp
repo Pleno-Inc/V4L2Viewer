@@ -1163,7 +1163,7 @@ void V4L2Viewer::OnSaveImageClicked()
         m_LastImageSaveFormat = ".tiff";
 
         QPixmap pixmap = m_PixmapItem->pixmap();
-        QImage image = pixmap.toImage();
+        QImage image = pixmap.toImageFormat(QPixelFormat::RGB);
         uint32_t height = image.height();
         uint32_t width = image.width();
         LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s", width, height, outputpath.c_str());
