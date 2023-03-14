@@ -1168,7 +1168,7 @@ void V4L2Viewer::OnSaveImageClicked()
         LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s: %s", outputpath.c_str(), width, height, (rc == 0) ? "OK" : "failed!");
 
     } else {
-        LOG_EX("V4L2Viewer::OnSaveImageClicked: file format not supported for %s", outputpath.c_str);
+        LOG_EX("V4L2Viewer::OnSaveImageClicked: file format not supported for %s", outputpath.c_str());
     }
 }
 
