@@ -71,46 +71,28 @@ int write_tiff(const char* outputpath, uint8_t* imgbytes, const uint32_t width, 
 {
     FILE* ofile = NULL;
 
-    printf("_alain_ %d\n", __LINE__);
-    fflush(stdout);
-
-#if 0
     uint8_t  header[TIFF_HDR_SIZE];
     memcpy(&header[0], &tiff_header, sizeof(header));
 
-    printf("_alain_ %d\n", __LINE__);
-    fflush(stdout);
     (void )write_header(&header[0], width, height, bpp);
 
-    printf("_alain_ %d\n", __LINE__);
-    fflush(stdout);
     ofile = fopen(outputpath, "w");
     if (! ofile) {
         return errno;
     }
 
     size_t nbytes = sizeof(header);
-    printf("_alain_ %d, %d\n", __LINE__, (int )nbytes);
-    fflush(stdout);
     if (fwrite(&header, 1, nbytes, ofile) != nbytes) {
         fclose(ofile);
         return errno;
     }
 
     nbytes = width*height * (bpp / 8);
-    printf("_alain_ %d, %d\n", __LINE__, (int )nbytes);
-    fflush(stdout);
     if (fwrite(imgbytes, 1, nbytes, ofile) != nbytes) {
         fclose(ofile);
         return errno;
     }
 
-    printf("_alain_ %d\n", __LINE__);
-    fflush(stdout);
     fclose(ofile);
-    printf("_alain_ %d\n", __LINE__);
-    fflush(stdout);
-#else
     return 0;
-#endif
 }

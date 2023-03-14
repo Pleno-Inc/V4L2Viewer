@@ -43,6 +43,8 @@
 
 #include <linux/media.h>
 
+#include "write_tiff.h"
+
 
 #define NUM_COLORS 3
 #define BIT_DEPTH 8
@@ -73,123 +75,6 @@ static int32_t int64_2_int32(const int64_t value)
         return std::max(value, (int64_t)std::numeric_limits<int32_t>::min());
     }
 }
-
-
-
-
-
-// tiff types: short = 3, int = 4
-// Tags: ( 2-byte tag ) ( 2-byte type ) ( 4-byte count ) ( 4-byte data )
-//    0100 0003 0000 0001 0064 0000
-//       |        |    |         |
-// tag --+        |    |         |
-// short int -----+    |         |
-// one value ----------+         |
-// value of 100 -----------------+
-//
-#define TIFF_HDR_NUM_ENTRY 8
-#define TIFF_HDR_SIZE 10+TIFF_HDR_NUM_ENTRY*12 
-static const uint8_t tiff_header[TIFF_HDR_SIZE] = {
-	// I     I     42    
-	  0x49, 0x49, 0x2a, 0x00,
-	// ( offset to tags, 0 )  
-	  0x08, 0x00, 0x00, 0x00, 
-	// ( num tags )  
-	  0x08, 0x00, 
-	// ( newsubfiletype, 0 full-image )
-	  0xfe, 0x00, 0x04, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	// ( image width )
-	  0x00, 0x01, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	// ( image height )
-	  0x01, 0x01, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-	// ( bits per sample )
-	  0x02, 0x01, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-	// ( Photometric Interpretation, 2 = RGB )
-	  0x06, 0x01, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 
-	// ( Strip offsets, 8 )
-	  0x11, 0x01, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 
-	// ( samples per pixel, 3 - RGB)
-	  0x15, 0x01, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00,
-	// ( Strip byte count )
-	  0x17, 0x01, 0x04, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-};
-
-
-static uint8_t* write_header(uint8_t * rgb, const uint32_t width, const uint32_t height, const uint16_t bpp)
-{
-	uint32_t ulTemp=0;
-	uint16_t sTemp=0;
-	memcpy(rgb, tiff_header, TIFF_HDR_SIZE);
-
-	sTemp = TIFF_HDR_NUM_ENTRY;
-	memcpy(rgb + 8, &sTemp, 2);
-
-	memcpy(rgb + 10 + 1*12 + 8, &width, 4);
-	memcpy(rgb + 10 + 2*12 + 8, &height, 4);
-	memcpy(rgb + 10 + 3*12 + 8, &bpp, 2);
-
-	// strip byte count
-	ulTemp = width * height * (bpp / 8) * 3;
-	memcpy(rgb + 10 + 7*12 + 8, &ulTemp, 4);
-
-	//strip offset
-	sTemp = TIFF_HDR_SIZE;
-	memcpy(rgb + 10 + 5*12 + 8, &sTemp, 2);
-
-	return rgb + TIFF_HDR_SIZE;
-};
-
-
-static int write_tiff(const char* outputpath, uint8_t* imgbytes, const uint32_t width, const uint32_t height, const int bpp)
-{
-    FILE* ofile = NULL;
-
-    printf("_alain_ %d\n", __LINE__);
-    fflush(stdout);
-
-#if 0
-    uint8_t  header[TIFF_HDR_SIZE];
-    memcpy(&header[0], &tiff_header, sizeof(header));
-
-    printf("_alain_ %d\n", __LINE__);
-    fflush(stdout);
-    (void )write_header(&header[0], width, height, bpp);
-
-    printf("_alain_ %d\n", __LINE__);
-    fflush(stdout);
-    ofile = fopen(outputpath, "w");
-    if (! ofile) {
-        return errno;
-    }
-
-    size_t nbytes = sizeof(header);
-    printf("_alain_ %d, %d\n", __LINE__, (int )nbytes);
-    fflush(stdout);
-    if (fwrite(&header, 1, nbytes, ofile) != nbytes) {
-        fclose(ofile);
-        return errno;
-    }
-
-    nbytes = width*height * (bpp / 8);
-    printf("_alain_ %d, %d\n", __LINE__, (int )nbytes);
-    fflush(stdout);
-    if (fwrite(imgbytes, 1, nbytes, ofile) != nbytes) {
-        fclose(ofile);
-        return errno;
-    }
-
-    printf("_alain_ %d\n", __LINE__);
-    fflush(stdout);
-    fclose(ofile);
-    printf("_alain_ %d\n", __LINE__);
-    fflush(stdout);
-#else
-    return 0;
-#endif
-}
-
-
-
 
 
 V4L2Viewer::V4L2Viewer(QWidget *parent, Qt::WindowFlags flags)
@@ -1245,16 +1130,11 @@ void V4L2Viewer::OnSaveImageClicked()
 {
     QString filename = "/Frame_"+QString::number(m_SavedFramesCounter)+m_LastImageSaveFormat;
     QString fullPath = QFileDialog::getSaveFileName(this, tr("Save file"), QDir::homePath()+filename, "*.png *.raw *.tiff");
-    printf("ALAIN %d\n", __LINE__);
-    fflush(stdout);
 
     const auto  outputpath = fullPath.toStdString();
-    printf("ALAIN %d: %s\n", __LINE__, outputpath.c_str());
-    fflush(stdout);
 
     if (fullPath.contains(".png"))
     {
-    printf("ALAIN %d: PNG\n", __LINE__);
         m_LastImageSaveFormat = ".png";
         QPixmap pixmap = m_PixmapItem->pixmap();
         QImage image = pixmap.toImage();
@@ -1263,7 +1143,6 @@ void V4L2Viewer::OnSaveImageClicked()
     }
     else if(fullPath.contains(".raw"))
     {
-    printf("ALAIN %d: RAW\n", __LINE__);
         m_LastImageSaveFormat = ".raw";
         QPixmap pixmap = m_PixmapItem->pixmap();
         QImage image = pixmap.toImage();
@@ -1281,35 +1160,19 @@ void V4L2Viewer::OnSaveImageClicked()
     }
     else if(fullPath.contains(".tiff"))
     {
-    printf("ALAIN %d: TIFF\n", __LINE__);
-    fflush(stdout);
         m_LastImageSaveFormat = ".tiff";
 
-    printf("ALAIN %d\n", __LINE__);
-    fflush(stdout);
         QPixmap pixmap = m_PixmapItem->pixmap();
         QImage image = pixmap.toImage();
-    printf("ALAIN %d\n", __LINE__);
-    fflush(stdout);
         uint32_t height = image.height();
         uint32_t width = image.width();
-    printf("ALAIN %d: %ux%u\n", __LINE__, width, height);
-    fflush(stdout);
-    printf("ALAIN %d: bits %p\n", __LINE__, image.bits());
-    fflush(stdout);
         LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s", width, height, outputpath.c_str());
         int rc = write_tiff(outputpath.c_str(), image.bits(), width, height, 8);
         if (rc == 0) {
-    printf("ALAIN %d\n", __LINE__);
-    fflush(stdout);
             LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s: OK", width, height, outputpath.c_str());
         } else {
-    printf("ALAIN %d\n", __LINE__);
-    fflush(stdout);
-            LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s: failed %s", width, height, outputpath.c_str(), strerror(rc));
+            LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s failed: %s", width, height, outputpath.c_str(), strerror(rc));
         }
-    printf("ALAIN %d\n", __LINE__);
-    fflush(stdout);
 
     } else {
         LOG_EX("V4L2Viewer::OnSaveImageClicked: file format not supported for %s", outputpath.c_str());
