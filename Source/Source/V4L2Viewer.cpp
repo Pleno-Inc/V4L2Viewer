@@ -1161,7 +1161,7 @@ void V4L2Viewer::OnSaveImageClicked()
         QPixmap pixmap = m_PixmapItem->pixmap();
         QImage image = pixmap.toImage();
         uint32_t height = image.height();
-        uint32_t width = image.width()
+        uint32_t width = image.width();
         int rc = write_tiff(outputpath.c_str(), image.bits(), width, height, 8);
         LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s: %s", outputpath.c_str(), width, height, (rc == 0) ? "OK" : "failed!");
 
