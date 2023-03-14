@@ -62,6 +62,7 @@ list(APPEND HEADER_FILES
 
 list(APPEND SOURCE_FILES
   ${SOURCES_PATH}/bayer.c
+  ${SOURCES_PATH}/write_tiff.c
   ${SOURCES_PATH}/BaseLogger.cpp
   ${SOURCES_PATH}/Camera.cpp
   ${SOURCES_PATH}/CameraObserver.cpp
