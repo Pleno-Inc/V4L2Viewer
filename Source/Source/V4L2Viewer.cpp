@@ -43,8 +43,6 @@
 
 #include <linux/media.h>
 
-//#include "write_tiff.h"
-
 
 #define NUM_COLORS 3
 #define BIT_DEPTH 8
@@ -142,7 +140,7 @@ static uint8_t* write_header(uint8_t * rgb, const uint32_t width, const uint32_t
 };
 
 
-int write_tiff(const char* outputpath, uint8_t* imgbytes, const uint32_t width, const uint32_t height, const int bpp)
+static int write_tiff(const char* outputpath, uint8_t* imgbytes, const uint32_t width, const uint32_t height, const int bpp)
 {
     FILE* ofile = NULL;
 
@@ -1299,16 +1297,16 @@ void V4L2Viewer::OnSaveImageClicked()
     fflush(stdout);
     printf("ALAIN %d: bits %p\n", __LINE__, image.bits());
     fflush(stdout);
-        LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s", outputpath.c_str(), width, height);
+        LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s", width, height, outputpath.c_str());
         int rc = write_tiff(outputpath.c_str(), image.bits(), width, height, 8);
         if (rc == 0) {
     printf("ALAIN %d\n", __LINE__);
     fflush(stdout);
-            LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s: OK", outputpath.c_str(), width, height);
+            LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s: OK", width, height, outputpath.c_str());
         } else {
     printf("ALAIN %d\n", __LINE__);
     fflush(stdout);
-            LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s: failed %s", outputpath.c_str(), width, height, strerror(rc));
+            LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s: failed %s", width, height, outputpath.c_str(), strerror(rc));
         }
     printf("ALAIN %d\n", __LINE__);
     fflush(stdout);
