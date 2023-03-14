@@ -1177,7 +1177,7 @@ void V4L2Viewer::OnSaveImageClicked()
     fflush(stdout);
         uint32_t height = image.height();
         uint32_t width = image.width();
-    printf("ALAIN %d\n", __LINE__);
+    printf("ALAIN %d: %ux%u\n", __LINE__, width, height);
     fflush(stdout);
     printf("ALAIN %d: bits %p\n", __LINE__, image.bits());
     fflush(stdout);
