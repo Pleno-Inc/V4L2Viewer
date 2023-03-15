@@ -213,6 +213,8 @@ static const struct smode_t {
     {8432, 5648, V4L2_PIX_FMT_SRGGB10},
     {6528, 4448, V4L2_PIX_FMT_SRGGB12},
     {6528, 4448, V4L2_PIX_FMT_SRGGB10},
+    //
+#if 0
     {8320, 5632, V4L2_PIX_FMT_SRGGB12},
     {8320, 5632, V4L2_PIX_FMT_SRGGB10},
     {8192, 5504, V4L2_PIX_FMT_SRGGB12},
@@ -225,6 +227,16 @@ static const struct smode_t {
     {2048, 2048, V4L2_PIX_FMT_SRGGB10},
     {1600, 1600, V4L2_PIX_FMT_SRGGB12},
     {1600, 1600, V4L2_PIX_FMT_SRGGB10},
+#else
+    {8336, 5556, V4L2_PIX_FMT_SRGGB12},
+    {8336, 5556, V4L2_PIX_FMT_SRGGB10},
+    {8192, 5556, V4L2_PIX_FMT_SRGGB12},
+    {8192, 5556, V4L2_PIX_FMT_SRGGB10},
+    {6656, 5556, V4L2_PIX_FMT_SRGGB12},
+    {6656, 5556, V4L2_PIX_FMT_SRGGB10},
+    {5760, 5556, V4L2_PIX_FMT_SRGGB12},
+    {5760, 5556, V4L2_PIX_FMT_SRGGB10},
+#endif
     {0, 0, 0},
 };
 
@@ -911,8 +923,9 @@ int Camera::SetFrameSize(uint32_t width, uint32_t height)
 
         if (0 == result)
         {
-            const auto sensor_mode = sensor_mode_for(fmt.fmt.pix.width, fmt.fmt.pix.height, fmt.fmt.pix.pixelformat);
-            const auto rc = SetSensorMode(sensor_mode);
+            const int sensor_mode = sensor_mode_for(fmt.fmt.pix.width, fmt.fmt.pix.height, fmt.fmt.pix.pixelformat);
+            const int rc = SetSensorMode(sensor_mode);
+            printf("ALAIN %d: %ux%u %08x => %d => %d\n", __LINE__, fmt.fmt.pix.width, fmt.fmt.pix.height, fmt.fmt.pix.pixelformat, sensor_mode, rc);
             //SetBypassMode(0);
             //SetOverrideEnable(1);
             //printf("ALAIN SetFrameSize: %ux%u %08x, sensor mode %d => %d\n", fmt.fmt.pix.width, fmt.fmt.pix.height, fmt.fmt.pix.pixelformat, sensor_mode, rc);
@@ -1213,8 +1226,9 @@ int Camera::SetPixelFormat(uint32_t pixelFormat, QString pfText)
 
         if (0 == result)
         {
-            const auto sensor_mode = sensor_mode_for(fmt.fmt.pix.width, fmt.fmt.pix.height, pixelFormat);
-            const auto rc = SetSensorMode(sensor_mode);
+            const int sensor_mode = sensor_mode_for(fmt.fmt.pix.width, fmt.fmt.pix.height, pixelFormat);
+            const int rc = SetSensorMode(sensor_mode);
+            printf("ALAIN %d: %ux%u %08x => %d => %d\n", __LINE__, fmt.fmt.pix.width, fmt.fmt.pix.height, pixelFormat, sensor_mode, rc);
             //SetBypassMode(0);
             //SetOverrideEnable(1);
             //printf("ALAIN SetPixelFormat: %ux%u %08x, sensor mode %d => %d\n", fmt.fmt.pix.width, fmt.fmt.pix.height, pixelFormat, sensor_mode, rc);
@@ -1291,6 +1305,7 @@ int Camera::GetFrameSizeIndex()
         else
         {
             index = sensor_mode_for(fmt.fmt.pix.width, fmt.fmt.pix.height, fmt.fmt.pix.pixelformat);
+            printf("ALAIN %d: %ux%u %08x => %d\n", __LINE__, fmt.fmt.pix.width, fmt.fmt.pix.height, fmt.fmt.pix.pixelformat, index);
             return index;
         }
 	}
@@ -1317,8 +1332,9 @@ void Camera::SetFrameSizeByIndex(int index)
 			m_pPixFormat->SetBytesPerLine(fmt, 0);
 		        m_pPixFormat->SetSizeImage(fmt, 0);
 
-            const auto sensor_mode = sensor_mode_for(frmsizeenum.discrete.width, frmsizeenum.discrete.height, fmt.fmt.pix.pixelformat);
-            const auto rc = SetSensorMode(sensor_mode);
+            const int sensor_mode = sensor_mode_for(frmsizeenum.discrete.width, frmsizeenum.discrete.height, fmt.fmt.pix.pixelformat);
+            const int rc = SetSensorMode(sensor_mode);
+            printf("ALAIN %d: %ux%u %08x => %d => %d\n", __LINE__, frmsizeenum.discrete.width, frmsizeenum.discrete.height, fmt.fmt.pix.pixelformat, sensor_mode, rc);
             //SetBypassMode(0);
             //SetOverrideEnable(1);
             //printf("ALAIN SetFrameSizeByIndex: %ux%u %08x, sensor mode %d => %d\n", frmsizeenum.discrete.width, frmsizeenum.discrete.height, fmt.fmt.pix.pixelformat, sensor_mode, rc);
