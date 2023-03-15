@@ -200,9 +200,9 @@ public:
 };
 
 
-static constexpr uint32_t V4L2_CID_SENSOR_MODE = 0x009a2008;
-static constexpr uint32_t V4L2_CID_BYPASS_MODE = 0x009a2064;
-static constexpr uint32_t V4L2_CID_OVERRIDE_ENABLE = 0x009a2065;
+static uint32_t V4L2_CID_SENSOR_MODE = 0x009a2008;
+static uint32_t V4L2_CID_BYPASS_MODE = 0x009a2064;
+static uint32_t V4L2_CID_OVERRIDE_ENABLE = 0x009a2065;
 
 static const struct smode_t {
     uint32_t  width;
@@ -551,6 +551,14 @@ void Camera::QueryControls(int fd)
     while (iohelper::xioctl(fd, VIDIOC_QUERYCTRL, &qctrl) == 0)
     {
         LOG_EX("Camera::QueryControls id=%d,name=%s,flags=%d,min=%d,max=%d,step=%d,type=%d,defval=%d", qctrl.id, qctrl.name, qctrl.flags, qctrl.minimum, qctrl.maximum, qctrl.step, qctrl.type, qctrl.default_value);
+
+        // if (strcmp((const char* )qctrl.name, "Sensor Mode") == 0) {
+        //     V4L2_CID_SENSOR_MODE = qctrl.id;
+        // } else if (strcmp((const char* )qctrl.name, "Bypass Mode") == 0) {
+        //     V4L2_CID_BYPASS_MODE = qctrl.id;
+        // } else if (strcmp((const char* )qctrl.name, "Override Enable") == 0) {
+        //     V4L2_CID_OVERRIDE_ENABLE = qctrl.id;
+        // }
         qctrl.id |= next_fl;
     }
 
@@ -569,6 +577,14 @@ void Camera::QueryControls(int fd)
     while (iohelper::xioctl(fd, VIDIOC_QUERY_EXT_CTRL, &qctrl_ext) == 0)
     {
         LOG_EX("Camera::QueryControls id=%d,name=%s,flags=%d,min=%d,max=%d,step=%d,type=%d,defval=%d,elsz=%d,elms=%d,ndims=%d,dim0=%d,dim1=%d,dim2=%d,dim3=%d", qctrl_ext.id, qctrl_ext.name, qctrl_ext.flags, qctrl_ext.minimum, qctrl_ext.maximum, qctrl_ext.step, qctrl_ext.type, qctrl_ext.default_value, qctrl_ext.elem_size, qctrl_ext.elems, qctrl_ext.nr_of_dims, qctrl_ext.dims[0], qctrl_ext.dims[1], qctrl_ext.dims[2], qctrl_ext.dims[3]);
+
+        // if (strcmp((const char* )qctrl.name, "Sensor Mode") == 0) {
+        //     V4L2_CID_SENSOR_MODE = qctrl.id;
+        // } else if (strcmp((const char* )qctrl.name, "Bypass Mode") == 0) {
+        //     V4L2_CID_BYPASS_MODE = qctrl.id;
+        // } else if (strcmp((const char* )qctrl.name, "Override Enable") == 0) {
+        //     V4L2_CID_OVERRIDE_ENABLE = qctrl.id;
+        // }
         qctrl_ext.id |= next_fl;
     }
 }
@@ -767,6 +783,10 @@ int Camera::StartStreamChannel(uint32_t pixelFormat, uint32_t payloadSize, uint3
                                   payloadSize, width, height, bytesPerLine,
                                   enableLogging);
 
+    // int rc = SetBypassMode(0);
+    // printf("?? ALAIN set bypass: %s\n", (rc == 0) ? "OK" : "failed!");
+    // rc = SetOverrideEnable(1);
+    // printf("?? ALAIN override enable: %s\n", (rc == 0) ? "OK" : "failed!");
 
     // start stream returns always success
     LOG_EX("Camera::StartStreamChannel OK.");
@@ -1334,7 +1354,7 @@ void Camera::SetFrameSizeByIndex(int index)
 
             const int sensor_mode = sensor_mode_for(frmsizeenum.discrete.width, frmsizeenum.discrete.height, fmt.fmt.pix.pixelformat);
             const int rc = SetSensorMode(sensor_mode);
-            printf("ALAIN %d: %ux%u %08x => %d => %d\n", __LINE__, frmsizeenum.discrete.width, frmsizeenum.discrete.height, fmt.fmt.pix.pixelformat, sensor_mode, rc);
+            printf("ALAIN %d: %ux%u %08x => %d; rc=%d\n", __LINE__, frmsizeenum.discrete.width, frmsizeenum.discrete.height, fmt.fmt.pix.pixelformat, sensor_mode, rc);
             //SetBypassMode(0);
             //SetOverrideEnable(1);
             //printf("ALAIN SetFrameSizeByIndex: %ux%u %08x, sensor mode %d => %d\n", frmsizeenum.discrete.width, frmsizeenum.discrete.height, fmt.fmt.pix.pixelformat, sensor_mode, rc);
@@ -1412,7 +1432,7 @@ int Camera::EnumAllControlNewStyle()
 				{
 					bIsReadOnly = true;
 				}
-                if (strcmp(qctrl.name, "Sensor Mode") == 0) {
+                if (strcmp(qctrl.name, "Sensor Mode") == 0 || strcmp(qctrl.name, "Bypass Mode") == 0 || strcmp(qctrl.name, "Override Enable") == 0) {
                     // alain: make read only
                     bIsReadOnly = true;
                 }

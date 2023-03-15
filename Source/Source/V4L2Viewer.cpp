@@ -93,7 +93,7 @@ V4L2Viewer::V4L2Viewer(QWidget *parent, Qt::WindowFlags flags)
     , m_sliderExposureValue(0)
     , m_bIsCropAvailable(false)
     , m_SavedFramesCounter(0)
-    , m_LastImageSaveFormat(".png")
+    , m_LastImageSaveFormat(".tiff")
     , m_DefaultDenominator(24)
     , m_bIsImageFitByFirstImage(false)
 {
@@ -1173,6 +1173,13 @@ void V4L2Viewer::OnSaveImageClicked()
         } else {
             LOG_EX("V4L2Viewer::OnSaveImageClicked: save TIFF image %dx%d to %s failed: %s", width, height, outputpath.c_str(), strerror(rc));
         }
+
+        // also save to PNG
+        const auto fullpathpng = fullPath + ".png";
+        image.save(fullpathpng, "png");
+        LOG_EX("V4L2Viewer::OnSaveImageClicked: save PNG image %dx%d to %s", width, height, fullpathpng.toStdString().c_str());
+
+        m_SavedFramesCounter++;
 
     } else {
         LOG_EX("V4L2Viewer::OnSaveImageClicked: file format not supported for %s", outputpath.c_str());
