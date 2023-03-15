@@ -50,7 +50,7 @@
 #define BIT_DEPTH 8
 
 #define MANUF_NAME_AV       "Allied Vision"
-#define APP_NAME            "Allied Vision V4L2 Viewer"
+#define APP_NAME            "Allied Vision V4L2 Viewer (pleno/alain/5)"
 #define APP_VERSION_MAJOR   2
 #define APP_VERSION_MINOR   0
 #define APP_VERSION_PATCH   0
